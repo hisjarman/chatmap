@@ -1,0 +1,36 @@
+
+version: '3.9'
+
+services:
+  chatmap-api:
+    build: .
+    container_name: chatmap-api
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: "postgresql://chatmap:yourpass@chatmap-db:5432/chatmap"
+      JWT_SECRET: "change_me_secret"
+    depends_on:
+      - chatmap-db
+    networks:
+      - chatmap
+
+  chatmap-db:
+    image: postgres:15
+    container_name: chatmap-db
+    restart: always
+    environment:
+      POSTGRES_USER: chatmap
+      POSTGRES_PASSWORD: yourpass
+      POSTGRES_DB: chatmap
+    volumes:
+      - chatmap-db-data:/var/lib/postgresql/data
+    networks:
+      - chatmap
+
+volumes:
+  chatmap-db-data:
+
+networks:
+  chatmap:
+    driver: bridge
